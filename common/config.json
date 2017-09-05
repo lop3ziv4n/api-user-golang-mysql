@@ -1,0 +1,7 @@
+{
+  "Server"      : "0.0.0.0:8080",
+  "MySQLDBHost" : "localhost:3306",
+  "MySQLDBUser"	: "root",
+  "MySQLDBPwd"	: "root",
+  "Database"    : "userdb"
+}
