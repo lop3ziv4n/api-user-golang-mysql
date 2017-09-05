@@ -14,9 +14,8 @@ import (
 // Returns all User documents
 func GetUsers(w http.ResponseWriter, r *http.Request) {
 	// Create new context
-	context := newContext()
-	defer context.close()
-	c := context.db()
+	context := NewContext()
+	c := context.Db()
 	repo := &data.UserRepository{c}
 	// Get all users form repository
 	users := repo.GetAll()
@@ -38,12 +37,16 @@ func GetUserById(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
 	// Create new context
-	context := newContext()
-	defer context.close()
-	c := context.db()
+	context := NewContext()
+	c := context.Db()
 	repo := &data.UserRepository{c}
 	// Get users form repository
-	user := repo.GetById(id)
+	user, err_db := repo.GetByID(id)
+	if err_db != nil {
+		common.DisplayAppError(w, err_db, "An unexpected error has occurred", 500)
+		return
+	}
+	// Create response data
 	j, err := json.Marshal(UserResource{Data: user})
 	if err != nil {
 		common.DisplayAppError(w, err, "An unexpected error has occurred", 500)
@@ -62,12 +65,12 @@ func GetUserByName(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	name := vars["name"]
 	// Create new context
-	context := newContext()
-	defer context.close()
-	c := context.db()
+	context := NewContext()
+	c := context.Db()
 	repo := &data.UserRepository{c}
 	// Get all users form repository
 	users := repo.GetAllByName(name)
+	// Create response data
 	j, err := json.Marshal(UsersResource{Data: users})
 	if err != nil {
 		common.DisplayAppError(w, err, "An unexpected error has occurred", 500)
@@ -91,11 +94,10 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	}
 	user := &dataResource.Data
 	// Create new context
-	context := newContext()
-	defer context.close()
-	c := context.db()
-	// Create User
+	context := NewContext()
+	c := context.Db()
 	repo := &data.UserRepository{c}
+	// Create User
 	repo.Create(user)
 	// Create response data
 	j, err := json.Marshal(dataResource)
@@ -124,12 +126,15 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 	}
 	user := &dataResource.Data
 	// Create new context
-	context := newContext()
-	defer context.close()
-	c := context.db()
-	// Create User
+	context := NewContext()
+	c := context.Db()
 	repo := &data.UserRepository{c}
-	repo.Update(id, user)
+	// Update user by id
+	err_db := repo.Update(id, user)
+	if err_db != nil {
+		common.DisplayAppError(w, err_db, "An unexpected error has occurred", 500)
+		return
+	}
 	// Create response data
 	j, err := json.Marshal(dataResource)
 	if err != nil {
@@ -149,12 +154,15 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
 	// Create new context
-	context := newContext()
-	defer context.close()
-	c := context.db()
-	// Remove user by id
+	context := NewContext()
+	c := context.Db()
 	repo := &data.UserRepository{c}
-	repo.Delete(id)
+	// Remove user by id
+	err := repo.Delete(id)
+	if err != nil {
+		common.DisplayAppError(w, err, "An unexpected error has occurred", 500)
+		return
+	}
 	// Send response back
 	w.WriteHeader(http.StatusNoContent)
 }

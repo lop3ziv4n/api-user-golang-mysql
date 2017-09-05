@@ -7,24 +7,24 @@ import (
 
 // Struct used for maintaining HTTP Request Context
 type Context struct {
-	DB *gorm.DB
+	MySQLSession *gorm.DB
 }
 
 // Close mysql db
-func (c *Context) close() {
-	c.DB.Close()
+func (c *Context) Close() {
+	defer c.MySQLSession.Close()
 }
 
 // Returns db context
-func (c *Context) db() *gorm.DB {
-	return c.DB
+func (c *Context) Db() *gorm.DB {
+	return c.MySQLSession
 }
 
 // Create a new Context object for each HTTP request
-func newContext() *Context {
+func NewContext() *Context {
 	session := common.GetDbSession()
 	context := &Context{
-		DB: session,
+		MySQLSession: session,
 	}
 	return context
 }

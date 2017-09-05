@@ -2,7 +2,7 @@ package common
 
 func StartUp() {
 	// Initialize AppConfig variable
-	InitConfig()
+	initConfig()
 	// Start a MySQL session
-	CreateDbSession()
+	createDbSession()
 }

@@ -43,7 +43,7 @@ func DisplayAppError(w http.ResponseWriter, handlerError error, message string, 
 var AppConfig configuration
 
 // Initialize AppConfig
-func InitConfig() {
+func initConfig() {
 	file, err := os.Open("common/config.json")
 	defer file.Close()
 	if err != nil {
@@ -62,12 +62,10 @@ var session *gorm.DB
 
 // get database session
 func GetDbSession() *gorm.DB {
-	log.Printf("[GetDbSession]")
 	if session == nil {
 		var err error
 		sqlConnection := AppConfig.MySQLDBUser + ":" + AppConfig.MySQLDBPwd + "@tcp(" + AppConfig.MySQLDBHost + ")/" + AppConfig.Database + "?charset=utf8&parseTime=True&loc=Local"
 		session, err = gorm.Open("mysql", sqlConnection)
-		defer session.Close()
 		if err != nil {
 			log.Fatalf("[GetDbSession]: %s\n", err)
 		}
@@ -76,11 +74,10 @@ func GetDbSession() *gorm.DB {
 }
 
 // Create database session
-func CreateDbSession() {
+func createDbSession() {
 	var err error
 	sqlConnection := AppConfig.MySQLDBUser + ":" + AppConfig.MySQLDBPwd + "@tcp(" + AppConfig.MySQLDBHost + ")/" + AppConfig.Database + "?charset=utf8&parseTime=True&loc=Local"
 	session, err = gorm.Open("mysql", sqlConnection)
-	defer session.Close()
 	if err != nil {
 		log.Fatalf("[CreateDbSession]: %s\n", err)
 	}
