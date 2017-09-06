@@ -15,6 +15,7 @@ import (
 func GetUsers(w http.ResponseWriter, r *http.Request) {
 	// Create new context
 	context := NewContext()
+	defer context.Close()
 	c := context.Db()
 	repo := &data.UserRepository{c}
 	// Get all users form repository
@@ -38,6 +39,7 @@ func GetUserById(w http.ResponseWriter, r *http.Request) {
 	id := vars["id"]
 	// Create new context
 	context := NewContext()
+	defer context.Close()
 	c := context.Db()
 	repo := &data.UserRepository{c}
 	// Get users form repository
@@ -66,6 +68,7 @@ func GetUserByName(w http.ResponseWriter, r *http.Request) {
 	name := vars["name"]
 	// Create new context
 	context := NewContext()
+	defer context.Close()
 	c := context.Db()
 	repo := &data.UserRepository{c}
 	// Get all users form repository
@@ -95,6 +98,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	user := &dataResource.Data
 	// Create new context
 	context := NewContext()
+	defer context.Close()
 	c := context.Db()
 	repo := &data.UserRepository{c}
 	// Create User
@@ -127,6 +131,7 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 	user := &dataResource.Data
 	// Create new context
 	context := NewContext()
+	defer context.Close()
 	c := context.Db()
 	repo := &data.UserRepository{c}
 	// Update user by id
@@ -155,6 +160,7 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	id := vars["id"]
 	// Create new context
 	context := NewContext()
+	defer context.Close()
 	c := context.Db()
 	repo := &data.UserRepository{c}
 	// Remove user by id

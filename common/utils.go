@@ -62,7 +62,7 @@ var session *gorm.DB
 
 // get database session
 func GetDbSession() *gorm.DB {
-	if session == nil {
+	if session.DB().Ping() != nil {
 		var err error
 		sqlConnection := AppConfig.MySQLDBUser + ":" + AppConfig.MySQLDBPwd + "@tcp(" + AppConfig.MySQLDBHost + ")/" + AppConfig.Database + "?charset=utf8&parseTime=True&loc=Local"
 		session, err = gorm.Open("mysql", sqlConnection)
@@ -70,6 +70,7 @@ func GetDbSession() *gorm.DB {
 			log.Fatalf("[GetDbSession]: %s\n", err)
 		}
 	}
+
 	return session
 }
 
